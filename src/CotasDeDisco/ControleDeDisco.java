@@ -31,4 +31,8 @@ public class ControleDeDisco {
         reader.close();
         return usersList;
     }
+
+    protected void sumOcupedSpace(List<String[]> usersList) {
+        
+    }
 }

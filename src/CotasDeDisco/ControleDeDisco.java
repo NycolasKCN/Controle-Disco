@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ControleDeDisco {
-    private long espacoOcupadoBits;
     private String caminhoArquivoEntrada;
 
     public ControleDeDisco() {
@@ -32,7 +31,13 @@ public class ControleDeDisco {
         return usersList;
     }
 
-    protected void sumOcupedSpace(List<String[]> usersList) {
-        
+    public long sumOcupedSpace(List<String[]> usersList) {
+        long sum = 0l;
+
+        for (String[] user : usersList) {
+            sum += Long.parseLong(user[1]);
+        }
+
+        return sum;
     }
 }

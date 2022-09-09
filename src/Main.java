@@ -9,7 +9,7 @@ public class Main {
         File file = new File("usuarios.txt");
         
         try {
-            System.out.println(control.readFile(file));   
+            System.out.println(control.sumOcupedSpace(control.readFile(file)));   
         } catch (Exception e) {
             System.out.println(e);
         }

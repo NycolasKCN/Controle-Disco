@@ -7,23 +7,28 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ControleDeDisco {
-    private String caminhoArquivoEntrada;
+    private File file;
+    private List<List<String>> users;
 
-    public ControleDeDisco() {
-        this("");
+    public ControleDeDisco(File file) {
+        this.file = file;
+    }   
+    
+    public void run() throws FileNotFoundException {
+        this.users = readFile(this.file);
+
     }
 
-    public ControleDeDisco(String caminhoArquivo) {
-        this.caminhoArquivoEntrada = caminhoArquivo;
-    }
-
-    public ArrayList<String[]> readFile(File file) throws FileNotFoundException {
+    public List<List<String>> readFile(File file) throws FileNotFoundException {
         Scanner reader = new Scanner(file);
-        ArrayList<String[]> usersList = new ArrayList<>();
+        List<List<String>> usersList = new ArrayList<>();
 
         while (reader.hasNextLine()) {
+            List<String> user = new ArrayList<>();
             // \\s+ é um regex para remover os espaços em branco
-            String[] user = reader.nextLine().split("\\s+");
+            String[] user2 = reader.nextLine().split("\\s+");
+            user.add(user2[0]);
+            user.add(user2[1]);
             usersList.add(user);
         }
 
@@ -31,13 +36,17 @@ public class ControleDeDisco {
         return usersList;
     }
 
-    public long sumOcupedSpace(List<String[]> usersList) {
+    public long sumOcupedSpace(List<List<String>> usersList) {
         long sum = 0l;
 
-        for (String[] user : usersList) {
-            sum += Long.parseLong(user[1]);
+        for (List<String> user : usersList) {
+            sum += Long.parseLong();
         }
 
         return sum;
+    }
+
+    public void bytesToMegabytes() {
+
     }
 }

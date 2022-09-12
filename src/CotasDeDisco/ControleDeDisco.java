@@ -17,6 +17,9 @@ public class ControleDeDisco {
     public void run() throws FileNotFoundException {
         this.users = readFile(this.file);
 
+        long ocupedSpace = sumOcupedSpace(users);
+        
+
     }
 
     public List<List<String>> readFile(File file) throws FileNotFoundException {
@@ -40,13 +43,13 @@ public class ControleDeDisco {
         long sum = 0l;
 
         for (List<String> user : usersList) {
-            sum += Long.parseLong();
+            sum += Long.parseLong(user.get(1));
         }
 
         return sum;
     }
 
-    public void bytesToMegabytes() {
-
+    public double bytesToMegabytes(long bytes) {
+        return bytes * Math.pow(10, -6);
     }
 }

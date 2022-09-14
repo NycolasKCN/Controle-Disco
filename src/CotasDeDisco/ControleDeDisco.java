@@ -1,7 +1,10 @@
 package CotasDeDisco;
 
+import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,7 +18,7 @@ public class ControleDeDisco {
 
     /**
      * 
-     * @param inputFile Caminho ou nome do arquivo que contém os usuarios
+     * @param inputFile      Caminho ou nome do arquivo que contém os usuarios
      * @param outputFileName Caminho ou nome do arquivo de saida dos dados
      */
     public ControleDeDisco(String inputFile, String outputFileName) {
@@ -38,6 +41,8 @@ public class ControleDeDisco {
 
         this.sumOcupedSpace();
         System.out.println("Essa é a soma total de bytes: " + this.totalOcupedSpace);
+
+        this.writeFile();
     }
 
     private void readFile() {
@@ -65,7 +70,33 @@ public class ControleDeDisco {
     }
 
     private void writeFile() {
+        PrintWriter pw = null;
+
+        try {
+            pw = new PrintWriter(new FileWriter(this.outputFileName));
+
+            pw.println(String.format("%-24s %s \n", "ACME inc.", "Uso de espaco em disco pelos usuarios"));
+            pw.println(line("==", 40) + "\n");
+            pw.println(" "); 
+
+        } catch (IOException e) {
+            System.out.println(e);
         
+        } finally {
+
+            if (pw != null) {
+                pw.close();
+            }
+
+        }
+    }
+
+    private String line (String c, int width) {
+        String line = "";
+        for (int i = 0; i < width; i++){
+            line += c;
+        }
+        return line;
     }
 
     private void sumOcupedSpace() {

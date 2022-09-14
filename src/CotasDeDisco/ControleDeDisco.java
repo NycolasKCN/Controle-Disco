@@ -1,52 +1,80 @@
 package CotasDeDisco;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ControleDeDisco {
-    private File file;
-    private List<List<String>> users;
 
-    public ControleDeDisco(File file) {
-        this.file = file;
-    }   
-    
-    public void run() throws FileNotFoundException {
-        this.users = readFile(this.file);
+    private String inputFileName;
+    private String outputFileName;
+    private ArrayList<ArrayList<String>> users;
+    private long totalOcupedSpace;
 
-        long ocupedSpace = sumOcupedSpace(users);
-        
+    /**
+     * 
+     * @param inputFile Caminho ou nome do arquivo que contém os usuarios
+     * @param outputFileName Caminho ou nome do arquivo de saida dos dados
+     */
+    public ControleDeDisco(String inputFile, String outputFileName) {
+        this.outputFileName = outputFileName;
+        this.inputFileName = inputFile;
 
+        this.users = new ArrayList<>();
+        this.totalOcupedSpace = 0l;
     }
 
-    public List<List<String>> readFile(File file) throws FileNotFoundException {
-        Scanner reader = new Scanner(file);
-        List<List<String>> usersList = new ArrayList<>();
+    public ControleDeDisco(String inputFile) {
+        this(inputFile, "relatorio.txt");
+    }
 
-        while (reader.hasNextLine()) {
-            List<String> user = new ArrayList<>();
-            // \\s+ é um regex para remover os espaços em branco
-            String[] user2 = reader.nextLine().split("\\s+");
-            user.add(user2[0]);
-            user.add(user2[1]);
-            usersList.add(user);
+    public void run() {
+        this.readFile();
+        for (ArrayList<String> user : users) {
+            System.out.println(user.get(0) + " " + user.get(1));
         }
 
-        reader.close();
-        return usersList;
+        this.sumOcupedSpace();
+        System.out.println("Essa é a soma total de bytes: " + this.totalOcupedSpace);
     }
 
-    public long sumOcupedSpace(List<List<String>> usersList) {
-        long sum = 0l;
+    private void readFile() {
+        Scanner reader = null;
+        try {
+            reader = new Scanner(new FileReader(this.inputFileName));
 
-        for (List<String> user : usersList) {
+            while (reader.hasNextLine()) {
+                String[] user = reader.nextLine().split("\\s+");
+                ArrayList<String> userArray = new ArrayList<>();
+                userArray.add(user[0]);
+                userArray.add(user[1]);
+
+                this.users.add(userArray);
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getStackTrace());
+
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+    }
+
+    private void writeFile() {
+        
+    }
+
+    private void sumOcupedSpace() {
+        long sum = 0l;
+        for (List<String> user : this.users) {
             sum += Long.parseLong(user.get(1));
         }
 
-        return sum;
+        this.totalOcupedSpace = sum;
     }
 
     public double bytesToMegabytes(long bytes) {

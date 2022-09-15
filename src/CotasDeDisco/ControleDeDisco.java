@@ -14,7 +14,8 @@ public class ControleDeDisco {
     private String inputFileName;
     private String outputFileName;
     private ArrayList<ArrayList<String>> users;
-    private long totalOcupedSpace;
+    private double totalOcupedSpace;
+    private double media;
 
     /**
      * 
@@ -27,6 +28,7 @@ public class ControleDeDisco {
 
         this.users = new ArrayList<>();
         this.totalOcupedSpace = 0l;
+        this.media = 0;
     }
 
     public ControleDeDisco(String inputFile) {
@@ -35,12 +37,8 @@ public class ControleDeDisco {
 
     public void run() {
         this.readFile();
-        for (ArrayList<String> user : users) {
-            System.out.println(user.get(0) + " " + user.get(1));
-        }
-
         this.sumOcupedSpace();
-        System.out.println("Essa é a soma total de bytes: " + this.totalOcupedSpace);
+        this.userPercentage();
 
         this.writeFile();
     }
@@ -70,31 +68,26 @@ public class ControleDeDisco {
     }
 
     private void writeFile() {
-        PrintWriter pw = null;
-
-        try {
-            pw = new PrintWriter(new FileWriter(this.outputFileName));
-
+        try (PrintWriter pw = new PrintWriter(new FileWriter(this.outputFileName))) {
+            
             pw.println(String.format("%-24s %s", "ACME inc.", "Uso de espaco em disco pelos usuarios"));
             pw.println(line("==", 40));
             pw.println(String.format("%-5s %-18s %10s %15s", "id.", "usuarios", "Espaço Utilizado", "% de uso"));
+            pw.println();
 
             for (int i = 0; i < this.users.size(); i++) {
                 String user = this.users.get(i).get(0);
                 double space = this.bytesToMegabytes(Long.parseLong(this.users.get(i).get(1)));
-                double percentage = 3.2;
-                pw.println(String.format("%-5d %-18s %10.2f %15s", i, user, space, percentage));
+                double percentage = Double.parseDouble(this.users.get(i).get(2));
+                pw.println(String.format("%-5d %-18s %10.2f  MB %14.2f %%", i + 1, user, space, percentage));
             }
+
+            pw.println();
+            pw.println(String.format("Espaco medio ocupado: %.2f MB", this.media));
+            pw.println(String.format("Espaco total ocupado: %.2f MB", this.totalOcupedSpace));
 
         } catch (IOException e) {
             System.out.println(e);
-
-        } finally {
-
-            if (pw != null) {
-                pw.close();
-            }
-
         }
     }
 
@@ -113,13 +106,23 @@ public class ControleDeDisco {
         return line;
     }
 
+    private void userPercentage() {
+        for (ArrayList<String> user : this.users) {
+            double user_usage = this.bytesToMegabytes(Long.parseLong(user.get(1)));
+            double user_percentage = (user_usage / this.totalOcupedSpace) * 100;
+            user.add(2, "" + user_percentage + "");
+        }
+
+        this.media = this.totalOcupedSpace / this.users.size();
+    }
+
     private void sumOcupedSpace() {
         long sum = 0l;
         for (List<String> user : this.users) {
             sum += Long.parseLong(user.get(1));
         }
 
-        this.totalOcupedSpace = sum;
+        this.totalOcupedSpace = this.bytesToMegabytes(sum);
     }
 
     public double bytesToMegabytes(long bytes) {

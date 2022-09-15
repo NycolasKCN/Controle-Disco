@@ -91,6 +91,12 @@ public class ControleDeDisco {
         }
     }
 
+    /**
+     * Repete uma string e a retorna
+     * @param c String que será repetida
+     * @param width quantidade de vezes que a String será repetida
+     * @return Retorna o caractere ou string {@code c} repetido.
+     */
     private String line (String c, int width) {
         String line = "";
         for (int i = 0; i < width; i++){

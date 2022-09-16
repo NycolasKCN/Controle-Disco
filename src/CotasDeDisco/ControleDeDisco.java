@@ -39,14 +39,12 @@ public class ControleDeDisco {
         this.readFile();
         this.sumOcupedSpace();
         this.userPercentage();
-
         this.writeFile();
     }
 
     private void readFile() {
-        Scanner reader = null;
-        try {
-            reader = new Scanner(new FileReader(this.inputFileName));
+        // try with resources - try com recursos
+        try (Scanner reader = new Scanner(new FileReader(this.inputFileName))) {
 
             while (reader.hasNextLine()) {
                 String[] user = reader.nextLine().split("\\s+");
@@ -59,20 +57,16 @@ public class ControleDeDisco {
 
         } catch (FileNotFoundException e) {
             System.out.println(e.getStackTrace());
-
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
     private void writeFile() {
+        // try with resources - try com recursos
         try (PrintWriter pw = new PrintWriter(new FileWriter(this.outputFileName))) {
-            
+
             pw.println(String.format("%-24s %s", "ACME inc.", "Uso de espaco em disco pelos usuarios"));
             pw.println(line("==", 40));
-            pw.println(String.format("%-5s %-18s %10s %15s", "id.", "usuarios", "Espaço Utilizado", "% de uso"));
+            pw.println(String.format("%-5s %-18s %10s %15s", "id.", "usuarios", "Espaco Utilizado", "% de uso"));
             pw.println();
 
             for (int i = 0; i < this.users.size(); i++) {
